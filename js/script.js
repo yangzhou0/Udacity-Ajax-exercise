@@ -28,17 +28,23 @@ function loadData() {
     // }).error(function(){
     //   $nytElem.append('<p>Error!</p>');
     // })
+    var wikiTimeout = setTimeout(function(){
+      $('#wikipedia-header').text('timeout');
+    },4000);
+
 
     $.ajax('https://en.wikipedia.org/w/api.php?action=opensearch&search=' + $city +
     '&format=json&callback=wikiCallback',{
       dataType: 'jsonp',
       success: function(response){
         var articles = response[1];
+        var urls = response[3];
         for (var i = 0; i < articles.length; i ++){
           var article = articles[i];
-          var url = 'http://en.wikipedia.org/wiki/' + article;
+          var url = urls[i];
           $wikiElem.append('<li><a href ="' + url + '">' + article + '</a></li>');
         }
+        clearTimeout(wikiTimeout);
       }
     })
     return false;
